@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
+
+
 const system_prompt = `
 You are an intelligent assistant that helps users create effective and concise flashcards for studying. 
 Your goal is to generate flashcards that are clear, focused, and optimized for quick review. 
@@ -16,7 +18,7 @@ Here are some guidelines:
 5. **Use Simple Language:** Aim to use language that is easy to grasp, avoiding overly technical jargon unless necessary.
 6. **Examples and Mnemonics:** If applicable, include simple examples or mnemonic devices in the answer to aid memory retention.
 7. **Consistency:** Maintain a consistent format for all flashcards to make studying more intuitive.
-8. Make 10 flashcards.
+8. Make 10 flashcards as default amount if user doesn't ask for an exact amount in which user can say anything resembling that they want that amount of cards exact for example if they want 60 give 60.
 
 Remember the goal is to facilitate effective learning and retention of information through these flashcards.
 
@@ -30,7 +32,13 @@ Return in the following JSON format don't give me anything else like when you sa
     ]
 }
 `
+
+
+
 export async function POST(req){
+    
+    let plan = await req.headers['plan']
+
     const openai = new OpenAI({
         baseURL: "https://openrouter.ai/api/v1",
         apiKey: process.env.OPENROUTER_API_KEY,
@@ -43,11 +51,14 @@ export async function POST(req){
             {role: 'system', content:system_prompt},
             { role: "user", content: data },
         ],
-      })
+    })
+    let maxFlash = 40
+    if(plan === "Premium"){
+        maxFlash = 10
+    }
     
-      console.log(completion.choices[0].message.content)
-      const flashcards = JSON.parse(completion.choices[0].message.content)
+    console.log(completion.choices[0].message.content)
+    const flashcards = (JSON.parse(completion.choices[0].message.content)).flashcards.slice(0, maxFlash);
 
-
-      return NextResponse.json(flashcards.flashcards)
+    return NextResponse.json(flashcards )
 }

@@ -1,11 +1,11 @@
 'use client'
 
-import { useUser } from '@clerk/nextjs'
+import { UserButton, useUser, SignedIn } from '@clerk/nextjs'
 import { useEffect, useState } from 'react'
 import {collection, doc, getDoc, getDocs} from 'firebase/firestore'
 import { db } from '@/firebase'
 import { useSearchParams } from 'next/navigation'
-import { Container, TextField, Typography, Paper, Box, Card, CardActionArea, CardContent, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Grid } from "@mui/material"
+import { Toolbar, Container, TextField, Typography, Paper, Box, Card, CardActionArea, CardContent, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Grid, AppBar } from "@mui/material"
 
 export default function Flashcard(){
     const {isLoaded, isSignedIn, user} = useUser()
@@ -42,7 +42,18 @@ export default function Flashcard(){
 
     return (
         <Container maxWidth="100vw">
-            <Grid container spacing={3} sx={{mt:4}}>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography varaint = "h6" style={{flexGrow: 1}}>Cardify</Typography>
+                    <Button color="inherit" href="/flashcards">Flashcards</Button>
+                    <Button color="inherit" href="/generate" sx={{mr:6}}>Generate</Button>
+                    <SignedIn>
+                    <UserButton />
+                    </SignedIn>
+                </Toolbar>
+            </AppBar>
+            <Button variant="contained" href='/flashcards' sx={{mt:3}}>Back</Button>
+            <Grid container spacing={3} sx={{mt:3}}>
                             {flashcards.map((flashcard, index) =>(
                                 <Grid item xs={12} sm = {6} md={4} key={index}>
                                     <Card>
