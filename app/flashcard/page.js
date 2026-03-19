@@ -340,7 +340,7 @@ export default function Flashcard(){
                 <DialogTitle>Share to Marketplace</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{mb: 2}}>
-                        Publish "{search}" so other users can discover and clone it.
+                        Publish &ldquo;{search}&rdquo; so other users can discover and clone it.
                     </DialogContentText>
                     <TextField
                         autoFocus
