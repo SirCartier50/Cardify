@@ -1,9 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import { formatAmountForStripe } from "@/utils/stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-const formatAmountForStripe = (amount) =>{
-    return (amount * 100)
-}
 export async function GET(req){
     const searchParams = req.nextUrl.searchParams
     const session_id = searchParams.get('session_id')

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/firebase";
 import { collection, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
+import { calculateStreak } from "@/utils/streak";
+import { calculateMasteryRate } from "@/utils/study";
 
 export async function POST(req) {
     try {
@@ -16,7 +18,7 @@ export async function POST(req) {
             cardsStudied: cardsStudied || 0,
             cardsCorrect: cardsCorrect || 0,
             totalCards: totalCards || 0,
-            masteryRate: totalCards > 0 ? Math.round((cardsCorrect / totalCards) * 100) : 0,
+            masteryRate: calculateMasteryRate(cardsCorrect || 0, totalCards || 0),
             timestamp: new Date().toISOString(),
         })
 
@@ -28,18 +30,7 @@ export async function POST(req) {
         const lastStudyDate = data.lastStudyDate || ''
         const currentStreak = data.studyStreak || 0
 
-        let newStreak = 1
-        if (lastStudyDate) {
-            const last = new Date(lastStudyDate)
-            const now = new Date(today)
-            const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24))
-
-            if (diffDays === 0) {
-                newStreak = currentStreak
-            } else if (diffDays === 1) {
-                newStreak = currentStreak + 1
-            }
-        }
+        const newStreak = calculateStreak(lastStudyDate, today, currentStreak)
 
         const longestStreak = Math.max(data.longestStreak || 0, newStreak)
         const totalSessions = (data.totalSessions || 0) + 1

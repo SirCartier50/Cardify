@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/firebase";
 import { collection, getDocs, addDoc, query, orderBy, limit, startAfter, doc, getDoc, where } from "firebase/firestore";
+import { filterDecks } from "@/utils/marketplace";
 
 export async function GET(req) {
     const searchParams = req.nextUrl.searchParams
@@ -17,14 +18,7 @@ export async function GET(req) {
             decks.push({id: doc.id, ...doc.data()})
         })
 
-        if (search) {
-            const searchLower = search.toLowerCase()
-            decks = decks.filter(deck =>
-                deck.name.toLowerCase().includes(searchLower) ||
-                (deck.description && deck.description.toLowerCase().includes(searchLower)) ||
-                (deck.tags && deck.tags.some(tag => tag.toLowerCase().includes(searchLower)))
-            )
-        }
+        decks = filterDecks(decks, search)
 
         return NextResponse.json(decks)
     } catch (error) {

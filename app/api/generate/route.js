@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { getMaxFlashcards, parseFlashcards } from "@/utils/flashcards";
 
 const system_prompt = `
 You are an intelligent assistant that helps users create effective and concise flashcards for studying.
@@ -48,15 +49,11 @@ export async function POST(req){
         ],
     })
 
-    let maxFlash = 10
-    if (plan === "Premium") {
-        maxFlash = 40
-    }
+    const maxFlash = getMaxFlashcards(plan)
 
     let flashcards
     try {
-        const parsed = JSON.parse(completion.choices[0].message.content)
-        flashcards = parsed.flashcards.slice(0, maxFlash)
+        flashcards = parseFlashcards(completion.choices[0].message.content, maxFlash)
     } catch (e) {
         return NextResponse.json(
             {error: "Failed to parse flashcard response. Please try again."},
