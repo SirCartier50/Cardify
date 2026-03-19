@@ -23,7 +23,6 @@ export default function Home() {
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             const subscription = docSnap.data().subscription || '';
-            console.log("here", subscription);
             setHasSubscription(!!subscription);
           } else {
             setHasSubscription(false);
@@ -48,14 +47,13 @@ export default function Home() {
     const checkoutSession = await fetch('/api/checkout_session', {
       method:'POST',
       headers: {
-        origin: 'http://localhost:3000',
+        origin: window.location.origin,
       },
     })
 
     const checkoutSessionJson = await checkoutSession.json()
 
-    if (checkoutSession.statusCode === 500){
-      console.error(checkoutSession.message)
+    if (!checkoutSession.ok){
       return
     }
 
@@ -89,7 +87,7 @@ export default function Home() {
 
         <AppBar position="static">
           <Toolbar>
-            <Typography varaint = "h6" style={{flexGrow: 1}}>Cardify</Typography>
+            <Typography variant="h6" style={{flexGrow: 1}}>Cardify</Typography>
             <SignedOut>
               <Button color="inherit" href="/sign-in">login</Button>
               <Button color="inherit" href="/sign-up">Sign Up</Button>
@@ -199,7 +197,7 @@ export default function Home() {
       <Container maxWidth>
         <AppBar position="static">
           <Toolbar>
-            <Typography varaint = "h6" style={{flexGrow: 1}}>Cardify</Typography>
+            <Typography variant="h6" style={{flexGrow: 1}}>Cardify</Typography>
             <SignedOut>
               <Button color="inherit" href="/sign-in">login</Button>
               <Button color="inherit" href="/sign-up">Sign Up</Button>

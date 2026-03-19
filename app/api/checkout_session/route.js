@@ -1,6 +1,5 @@
 import Stripe from "stripe";
-import { NextResponse } from "next/server"; 
-import { Puritan } from "next/font/google";
+import { NextResponse } from "next/server";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const formatAmountForStripe = (amount) =>{
     return (amount * 100)
@@ -49,7 +48,3 @@ export async function POST(req){
         status:200,
     })
 }
-
-GET
-POST
-DELETE

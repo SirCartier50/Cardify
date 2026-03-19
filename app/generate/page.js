@@ -19,8 +19,6 @@ export default function Generate(){
 
     const handleSubmit= async ()=>{
         let plan = await getPlan()
-        
-        console.log(plan)
         fetch('api/generate', {
             method: 'POST',
             headers: {
@@ -87,9 +85,11 @@ export default function Generate(){
         <Container maxWidth="100vw">
             <AppBar position="static">
                 <Toolbar>
-                    <Typography varaint = "h6" style={{flexGrow: 1}}>Cardify</Typography>
-                    <Button color="inherit" href="/flashcards">Flashcards</Button>
-                    <Button color="inherit" href="/generate" sx={{mr:6}}>Generate</Button>
+                    <Typography variant="h6" style={{flexGrow: 1}}>Cardify</Typography>
+                    <Button color="inherit" href="/marketplace">Marketplace</Button>
+                    <Button color="inherit" href="/flashcards">My Decks</Button>
+                    <Button color="inherit" href="/generate">Generate</Button>
+                    <Button color="inherit" href="/analytics" sx={{mr: 2}}>Analytics</Button>
                     <SignedIn>
                     <UserButton />
                     </SignedIn>

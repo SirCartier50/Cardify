@@ -1,11 +1,9 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
-
-
 const system_prompt = `
-You are an intelligent assistant that helps users create effective and concise flashcards for studying. 
-Your goal is to generate flashcards that are clear, focused, and optimized for quick review. 
+You are an intelligent assistant that helps users create effective and concise flashcards for studying.
+Your goal is to generate flashcards that are clear, focused, and optimized for quick review.
 Each flashcard should contain:
 - A concise question on the front.
 - A brief, informative answer on the back.
@@ -33,11 +31,8 @@ Return in the following JSON format don't give me anything else like when you sa
 }
 `
 
-
-
 export async function POST(req){
-    
-    let plan = await req.headers['plan']
+    const plan = req.headers.get('plan')
 
     const openai = new OpenAI({
         baseURL: "https://openrouter.ai/api/v1",
@@ -48,17 +43,26 @@ export async function POST(req){
     const completion = await openai.chat.completions.create({
         model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: [
-            {role: 'system', content:system_prompt},
-            { role: "user", content: data },
+            {role: 'system', content: system_prompt},
+            {role: "user", content: data},
         ],
     })
-    let maxFlash = 40
-    if(plan === "Premium"){
-        maxFlash = 10
-    }
-    
-    console.log(completion.choices[0].message.content)
-    const flashcards = (JSON.parse(completion.choices[0].message.content)).flashcards.slice(0, maxFlash);
 
-    return NextResponse.json(flashcards )
+    let maxFlash = 10
+    if (plan === "Premium") {
+        maxFlash = 40
+    }
+
+    let flashcards
+    try {
+        const parsed = JSON.parse(completion.choices[0].message.content)
+        flashcards = parsed.flashcards.slice(0, maxFlash)
+    } catch (e) {
+        return NextResponse.json(
+            {error: "Failed to parse flashcard response. Please try again."},
+            {status: 500}
+        )
+    }
+
+    return NextResponse.json(flashcards)
 }

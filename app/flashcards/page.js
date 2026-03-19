@@ -1,7 +1,7 @@
 'use client'
 import {SignedIn, UserButton, useUser, SignedOut} from '@clerk/nextjs'
 import { useEffect, useState } from 'react'
-import { CollectionReference, doc, getDoc, setDoc, collection } from 'firebase/firestore'
+import { doc, getDoc, setDoc, collection } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { useRouter } from 'next/navigation'
 import { AppBar, Card, CardActionArea, CardContent, Container, Grid, Typography, Toolbar, Button} from '@mui/material'
@@ -39,9 +39,11 @@ export default function Flashcards() {
         <Container maxWidth='100vw'>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography varaint = "h6" style={{flexGrow: 1}}>Cardify</Typography>
-                    <Button color="inherit" href="/flashcards">Flashcards</Button>
-                    <Button color="inherit" href="/generate" sx={{mr:6}}>Generate</Button>
+                    <Typography variant="h6" style={{flexGrow: 1}}>Cardify</Typography>
+                    <Button color="inherit" href="/marketplace">Marketplace</Button>
+                    <Button color="inherit" href="/flashcards">My Decks</Button>
+                    <Button color="inherit" href="/generate">Generate</Button>
+                    <Button color="inherit" href="/analytics" sx={{mr: 2}}>Analytics</Button>
                     <SignedIn>
                     <UserButton />
                     </SignedIn>

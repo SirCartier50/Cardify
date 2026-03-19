@@ -57,20 +57,19 @@ const ResultPage = () =>{
         }
     }, [time, router])
 
-    const setSubscription = async () =>{
-        const docRef = doc(collection(db, 'users'), user.id)
-        const docSnap = await getDoc(docRef)
-    
-        if(docSnap.exists()){
-          setDoc(docRef, {subscription: "Premium"}, {merge:true})
-        }else{
-          setDoc(docRef, {subscription: "Premium"})
+    useEffect(() => {
+        const setSubscription = async () => {
+            if (!user?.id || session?.payment_status !== "paid") return
+            const docRef = doc(collection(db, 'users'), user.id)
+            const docSnap = await getDoc(docRef)
+            if (docSnap.exists()) {
+                await setDoc(docRef, {subscription: "Premium"}, {merge: true})
+            } else {
+                await setDoc(docRef, {subscription: "Premium"})
+            }
         }
-    }
-
-    if(session?.payment_status === "paid"){
         setSubscription()
-    }
+    }, [session, user])
 
     if (loading){
         return(
